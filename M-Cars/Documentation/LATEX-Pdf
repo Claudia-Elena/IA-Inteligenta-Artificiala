@@ -1,0 +1,539 @@
+\documentclass{article}
+%% \usepackage{times}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[table]{xcolor}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\hypersetup{colorlinks=true}
+\graphicspath{ {images/} }
+\huge
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{CLAUDIA-ELENA CIONTU} % controls the left corner of the header
+\chead{} % controls the center of the header
+\rhead{\textit{Inteligenta Artificiala}} % controls the right corner of the header
+\lfoot{} % controls the left corner of the footer
+\cfoot{} % controls the center of the footer
+\rfoot{Page~\thepage} % controls the right corner of the footer
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.8pt}
+\begin{document}
+\thispagestyle{plain}% Removes the header from the first page. Change plain to empty to remove the numbering entirely.
+
+
+
+
+\begin{center}
+\Large
+\textcolor{BlueViolet}{{Universitatea din Craiova,\ Facultatea de Automatică, Calculatoare și Electronică}}\\
+    \vspace{7mm}
+     \end{center} 
+    \begin{center}
+          
+    \textbf{\includegraphics[scale=0.5]{logo-ace.jpeg}}
+\end{center}
+% top matter
+
+
+
+\title{\textbf{\textit{M Vehicles}}}
+
+\vspace{1em}
+\LARGE
+\textbf{\textcolor{MidnightBlue}{{  Titlu tema}}}: M Vehicles
+
+\LARGE
+\vspace{1em}
+\textbf{\textcolor{MidnightBlue}{{Nume si prenume}}}:Ciontu Claudia-Elena
+
+\LARGE
+\vspace{1em}
+\textbf{\textcolor{MidnightBlue}{{Grupa}}}: CR2.1 B
+
+\LARGE
+\vspace{1em}
+\textbf{\textcolor{MidnightBlue}{{Anul de studiu}}}: Anul 2
+
+\LARGE
+\vspace{1em}
+\textbf{\textcolor{MidnightBlue}{{Specialitatea}}}: Calculatoare si Tehnologia Informatiei
+
+
+
+% abstract
+\newpage
+\renewcommand*\contentsname{\centering \textcolor{blue}{{ Cuprins}}\\
+\vspace{1cm} } 
+\large \tableofcontents
+\newpage
+% sections
+\section{\bfseries\scshape\textcolor{BlueViolet}{Enuntul problemei}}
+Let us assume that m vehicles are located in squares (1, 1) through (m, 1) (the
+bottom row) of an m × m squared parking. The vehicles must be moved to the
+top row, but arranged in reverse order; so vehicle i starting from (i, 1) must end up in (m − i + 1, m). On each time step, each of the m vehicles is restricted to move only one square up, down, left, or right, or keep current position (i.e. does not move); but if a vehicle does not move, one other adjacent vehicle (but not more than one) can hop over it. 
+Two vehicles cannot occupy the same square.
+
+a. Write a detailed formulation for this search problem.
+
+b. Identify a suitable search algorithm for this task and explain your choice. 
+
+
+
+\section {\textcolor{BlueViolet}{Pseudocode of Algoritms}}
+Pentru problema primita am ales sa scriu codul in Python si sa ma folosesc de analogiile de la 8-puzzle si 15-puzzle\\\\
+Am considerat ca cele doua metode de cautatre alese de mine ma vor ajuta in realizarea experiemntelor programului meu si ca vor fi potrivite pentru el.
+8-puzzle-ul aparține familiei de puzzle-uri glisante, care sunt adesea folosite ca probleme de testare SLIDING-BLOCK PUZZLES pentru noi algoritmi de căutare în AI. Această familie este cunoscută ca fiind NP-completă\\\\
+Deci nu ne așteptăm să găsim metode semnificativ mai bune în cel mai rău caz decât algoritmii de căutare descriși în acest capitol și în următorul. 8-puzzle are 9! / 2 = 181, 440 la care se poate ajunge afirmă și se rezolvă ușor.\\\\ Puzzle-ul 15 (pe o placă 4 × 4) are în jur de 1,3 trilioane de stări, iar instanțele aleatorii pot fi rezolvate optim în câteva milisecunde de către cei mai buni algoritmi de căutare.
+24-puzzle (pe o tablă 5 × 5) are în jur de 1025 de stări, iar instanțele aleatorii durează câteva ore pentru a se rezolva optim
+ \begin{center}
+    \textbf{\includegraphics[scale=0.4]{myp.png}}
+\end{center}\\
+\subsection{DEPTH-FIRST-GRAPH-SEARCH}
+DEPTH-FIRST-GRAPH-SEARCH este un algoritm pentru căutarea unei structuri grafice. Unul începe de la un vârf și explorează cât mai mult posibil într-o singură direcție înainte de a merge înapoi și de a alege o altă direcție. Putem vizualiza DFS, în cazul în care pătratele în gri reprezintă vertici neconectate care nu pot fi atinse în grafic. Urmăriți imaginea DFS de mai jos pentru a afla cum funcționează.
+ \begin{center}
+    \textbf{\includegraphics[scale=0.5]{DFS.png}}
+\end{center}\\
+
+Într-un alt exemplu de DFS, vedem că încearcă să meargă într-o direcție cât mai mult posibil și schimbând direcțiile numai când am ajuns la capătul (un perete) al acelei direcții. Dacă nu există nicio altă direcție de intrare și am ajuns la o fundătură completă, revenim la ultima intersecție despărțitoare și încercăm să mergem cât mai adânc posibil în altă direcție. Repetăm acest proces până găsim sfârșitul sau explorăm fiecare cale posibilă.
+ \begin{center}
+    \textbf{\includegraphics[scale=0.5]{dfs2.png}}
+\end{center}\\
+\begin{center}
+\begin{tabbing}
+\large
+\indent\textbf{\textcolor{Periwinkle}{func}}\=\textbf{\textcolor{Periwinkle}{tion}}
+\textsc{\bfseries{DEPTH-FIRST-GRAPH-SEARCH}}{ ($problem$)}\ \textbf{returns} a solution node or failure\\\\ 
+\bfseries{1.}\indent \> $frontier \leftarrow$ a node with STATE = $problem.$INITIAL , PATH-COST = 0\\
+\bfseries{2.}\indent \> $explored  \leftarrow $ an empty set \\
+\bfseries{3.}\indent\>\textbf{loop dot} IS-EMPTY?  \= $( frontier )$ \textbf{ then return failure}\\
+\bfseries{4.}\indent\> \ $node \leftarrow $POP($frontier$)\\
+\bfseries{5.}\indent\>     \ \textbf{if } \= $problem.$IS-GOAL-Test( $node.$STATE ) \textbf{then}\\
+\bfseries{6.}\indent\>   \>\textbf{return} $Solution(node)$\\
+\bfseries{7.}\indent\>      \textbf{end if}\\
+\bfseries{8.}\indent\>      {add node.State to explored}\\
+\bfseries{9.}\indent\> \textbf{for each } $action$ $in$ $problem.$ACTION( $node \ , \ State$ ) \textbf{do }\\
+\bfseries{10.}\indent\> \ $child \leftarrow CHILD$-$NODE(problem,node,action $)\\
+\bfseries{11.}\indent\>     \ \textbf{if } \= $child.$STATE \textbf{ is not } in not $explored$  of $frontier$\\ \indent\>     \textbf{then} SOLUTION(child)\\
+\bfseries{12.}\indent\>\textbf{return} $none$\\\\
+\end{tabbing}
+\end{center}
+
+\subsection{ASTAR-SEARCH}
+A *  este un algoritm computerizat care este utilizat pe scară largă în căutare de trasee și traversarea graficelor. Algoritmul trasează în mod eficient o cale parcursibilă între mai multe noduri sau puncte, pe grafic.\\\\
+Pe o hartă cu multe obstacole, identificarea drumurilor de la punctele A la B poate fi dificilă. Un robot, de exemplu, fără a obține multă altă direcție, va continua până când întâlnește un obstacol, ca în exemplul de găsire a căilor din stânga de mai jos.\\\\
+Cu toate acestea, algoritmul A * introduce o euristică într-un algoritm obișnuit de căutare a graficelor, planificând în esență la fiecare pas, astfel încât să se ia o decizie mai optimă. Cu A *, un robot ar găsi în schimb o cale într-un mod similar cu diagrama din dreapta de mai jos.\\\\
+A * este o extensie a algoritmului lui Dijkstra cu unele caracteristici ale căutării prin lățime (BFS).\\\\
+La fel ca Dijkstra, A * funcționează realizând un arbore de cale cu cel mai mic cost de la nodul de pornire la nodul țintă. Ceea ce face A * diferit și mai bun pentru multe căutări este că pentru fiecare nod, A * folosește o funcție f (n) f (n) care oferă o estimare a costului total al unei căi care utilizează acel nod. Prin urmare, A * este o funcție euristică, care diferă de un algoritm prin aceea că o euristică este mai mult o estimare și nu este neapărat corectă.\\
+A * extinde căile care sunt deja mai puțin costisitoare utilizând această funcție:\\
+f (n) = g (n) + h (n),Unde\\
+f (n) = costul total estimat al traseului prin nod n\\
+g (n) = cost până acum pentru a ajunge la nod n\\
+h (n) = costul estimat de la nn la obiectiv. Aceasta este partea euristică a funcției de cost, deci este ca o presupunere.\\
+ \begin{center}
+    \textbf{\includegraphics[scale=0.5]{MHT.png}}
+\end{center}\\
+În grila de mai sus, algoritmul A * începe la început (nod roșu) și ia în considerare toate celulele adiacente. Odată ce lista celulelor adiacente a fost completată, aceasta le filtrează pe cele care sunt inaccesibile (pereți, obstacole, în afara limitelor). Apoi alege celula cu cel mai mic cost, care este f (n) estimat. Acest proces se repetă recursiv până când a fost găsită cea mai scurtă cale către țintă (nod albastru). Calculul lui f (n) f (n) se face printr-o euristică care oferă de obicei rezultate bune.
+
+\begin{center}
+\begin{tabbing}
+\large
+\indent\textbf{\textcolor{Periwinkle}{func}}\=\textbf{\textcolor{Periwinkle}{tion}}
+
+\textsc{\bfseries{ASTAR-SEARCH}}{ ($problem,h=NONE$)}\ \textbf{returns} a solution node or failure\\\\ 
+\bfseries{1.}\indent \> $h \leftarrow$ memoize(h or problem.h, 'h') \\
+\bfseries{2.}\indent\>\textbf{return} $best$\_$first$\_$graph$\_$search(problem, lambda n: n.path$\_$cost + h(n))$\\\\
+\end{tabbing}
+\end{center}
+\begin{center}
+\begin{tabbing}
+\large
+\indent\textbf{\textcolor{Periwinkle}{func}}\=\textbf{\textcolor{Periwinkle}{tion}}
+\textsc{\bfseries{BEST-FIRST-SEARCH}}{ ($problem,f$)}\ \textbf{returns} a solution node or none\\\\ 
+\bfseries{1.}\indent \> $node \leftarrow$ a node with STATE = $problem.$INITIAL \\
+\bfseries{2.}\indent \> $frontier \leftarrow $ a priority queue ordered by $f$\\
+\bfseries{3.}\indent \> $explored  \leftarrow $ a lookup table, with one entry with key $problem.$INITIAL and value $node$\\
+\bfseries{4.}\indent\>\textbf{while} not IS-EMPTY  \= $( frontier )$ \textbf{ do}\\
+\bfseries{5.}\indent\> \ $node \leftarrow $POP($frontier$)\\
+\bfseries{6.}\indent\>     \ \textbf{if } \= $problem.$IS-GOAL-Test( $node.$STATE ) \textbf{then}\\
+\bfseries{7.}\indent\>   \>\textbf{return} $node$\\
+\bfseries{8.}\indent\>      \textbf{end} if\\
+\bfseries{9.}\indent\> \textbf{for each } $child$ \textbf{ in } EXPAND( $problem \ , \ node$ )\\
+\bfseries{10.}\indent\>     \ \textbf{if } \= $child.$STATE \textbf{ is not } in $explored$ \textbf{and} $child$ \textbf{is not} in $frontier$\\ \indent\>     \> \ \textbf{or} $child.$PATH-COST $<$ $explored\ [child.STATE].PATH-COST$ \textbf{then}\\
+\bfseries{11.}\indent\> \> $explored \ [child.STATE] \leftarrow child$\\
+\bfseries{12.}\indent\> \> \textbf{add} $child$ \textbf{to} $frontier$\\
+\bfseries{13.}\indent\>     \ \textbf{end} if \\
+\bfseries{14.}\indent\> \textbf{end} for\\
+\bfseries{15.}\indent\>\textbf{return} $none$\\\\
+\end{tabbing}
+\end{center}
+\section{\textcolor{BlueViolet}{Schita Aplicației.}}\label{sec_tr}
+\subsection{\textcolor{CadetBlue}{Ansamblul arhitectural al aplicatiei}}
+  \begin{center}
+    \textbf{\includegraphics[scale=1.0]{module.png}}
+\end{center}
+Programul este organizat pe module,fiecare modul continand functii particulare.
+Functiile sunt apelate in main. 
+Structura programului arata ca in figura de mai sus,iar modulele sunt urmatoarele:\\\\
+-main(modulul principal ce ruleaza programul)\\\\
+-Cars(modulul unde sunt implememtate functiile ce ajuta la rezolvare problemei)\\\\
+-search(modulul unde sunt implementate diverse functii de cautare)\\\\
+-utils(modulul ce contine tool-uri ce ajuta la rezolvarea problemei\\\\
+
+\subsection {\textcolor{CadetBlue}{Specificatiile formatului datelor de intrare}}
+Generarea datelor de intrare se realizeaza cu ajutorul variabilei \textit{marime$\_$parcare}
+Variabila \textit{marime$\_$parcare} este generata aleatoriu cu ajutorul functiei din Python numita \textit{random.randint(a,b)} . Valorile acestei variabile se afla intre 1 si 10.\\\\
+In functie de valoarea generata pentru variabila \textit{marime$\_$parcare} initiam
+\textit{INITIAL$\_$STATE} .\\
+Acest lucru se realizeaza cu ajutorul  metodei \textit{append()} care adaugă un element la sfârșitul listei.\\
+\begin{center}
+    \textbf{\includegraphics[scale=1.0]{date_intrare.png}}
+\end{center}
+\subsection {\textcolor{CadetBlue}{Specificatiile formatului datelor de iesire}}
+Pentru generarea datelor de iesire initializam \textit{GOAL$\_$STATE} cu ajutorul metodei \textit{append()} care adaugă un element la sfârșitul listei.\\
+De mentionat ca variabila \textit{marime$\_$parcare$\_$aux} este o copie a variabilei \textit{marime$\_$parcare}
+\begin{center}
+    \textbf{\includegraphics[scale=1.0]{date_iesire.png}}
+\end{center}
+Datele de iesire se genereaza in fisiere de tip \textit{date$\_$X$.$txt} cat si in consola.\\
+In fisierul de mai jos putem observa ca datele noastre de iesire consta in:\\
+-tipul de cautare folosit;\\
+-dimensiunea folosita a parcarii noatre de masini;\\
+-starea initiala ;\\
+-obiectivul nostru unde vrem sa ajungem;\\
+-actiunile executate si cefunctie de a calcula distanta;\\
+-timpul de executie in secunde;\\
+-costul cai;\\
+\begin{center}
+    \textbf{\includegraphics[scale=1.0]{date_iesire2.png}}
+\end{center}
+In consola,dupa cum putem vedea in imaginea de mai jos,  avem generat toate mutarile pe care le fac masinile din \textit{INITIAL$\_$STATE} pana in  \textit{GOAL$\_$STATE}\\\\
+De asemenea avem generat cu ajutorul functiei \textit{compare$\_$searcher} din modulul \textit{search} o comparatie intre cele 2 metode de cautare,respectiv metode de a calcula distanta (de metionat ca aceasta functie am preluat-o in lucrarea de laborator)
+\begin{center}
+    \textbf{\includegraphics[scale=0.6]{2.png}}
+\end{center}
+\subsection {\textcolor{CadetBlue}{Lista Modulelor Aplicatiei}}
+Penttru realizarea temei de laborator ,m-am folosit de \textit{code$\_$skeleton}-ul de la laboratorul 5 al  disciplinei \textit{Inteligenta Artificiala}.
+De mentionat ca am preluat modulul \textit{search.py} si \textit{utils.py} din laboartor si am updatat modulul \textit{main.py} si \textit{Cars.py} din laborator pentru Problema \textit{fifteen$\_$puzzle.}\\
+Mai jos in aceasta sectiune voi face o prezentare a tuturor modulelor aplicatieii cat si o descriere a acestora.
+\subsubsection{\textcolor{Periwinkle}{main.py}}
+
+Modulul \textbf{main} este modulul unde apelam toate functiile si declaram variabilele necesare.
+Incepem prin a crea fisierul unde se vor afisa rezultatele , 
+declaram variabila marime$\_$parcare care reprezinta dimensiunea parcarii noastre so se calculeaza folosint o functie de calculare random a unui numar .\\ Acestei variabole ii creem o copie ce ne va ajuta la initializarea   \textit{GOAL$\_$STATE}-ului nostru.\\ 
+Declaram listele noastre de  \textit{INITIAL$\_$STATE} si  \textit{GOAL$\_$STATE} cu ajutorul a doua for-uri:\\
+\textcolor{PineGreen}{Primele 2 for -uri creeaza  \textit{INITIAL$\_$STATE} ( de exemplu pentru o parcare de marime egala cu 3 avem  \textit{INITIAL$\_$STATE} = 1,2,3,0,0,0,0,0,0 }
+\begin{tabbing}
+\large
+\indent\textbf{\textcolor{Periwinkle}{for}} $ $i {\textcolor{Periwinkle}{ in }}\textbf{\textcolor{purple}{range}}
+\textsc{\bfseries{}}{ (marime$\_$parcare):}\\ 
+\bfseries{  }\indent \> date$\_$intrare.append(i+1)  \\
+\indent\textbf{\textcolor{Periwinkle}{for}} $ $i {\textcolor{Periwinkle}{ in }}\textbf{\textcolor{purple}{range}}
+\textsc{\bfseries{}}{ (marime$\_$parcare *(marime$\_$parcare $-$ 1) ):}\\
+\bfseries{  }\indent \> date$\_$intrare.append(0)  \\
+\end{tabbing}
+
+\textcolor{PineGreen}{Urmatoarele 2 for -uri creeaza  \textit{GOAL$\_$STATE} ( de exemplu pentru o parcare de marime egala cu 3 avem  \textit{GOAL$\_$STATE} = 0,0,0,0,0,0,3,2,1 }
+\begin{tabbing}
+\large
+\indent\textbf{\textcolor{Periwinkle}{for}} $ $i {\textcolor{Periwinkle}{ in }}\textbf{\textcolor{purple}{range}}
+\textsc{\bfseries{}}{ (marime$\_$parcare):}\\ 
+\bfseries{  }\indent \> date$\_$intrare.append(i+1)  \\
+\indent\textbf{\textcolor{Periwinkle}{for}} $ $i {\textcolor{Periwinkle}{ in }}\textbf{\textcolor{purple}{range}}
+\textsc{\bfseries{}}{ (marime$\_$parcare *(marime$\_$parcare $-$ 1) ):}\\
+\bfseries{  }\indent \> date$\_$intrare.append(0)  \\
+\end{tabbing}
+
+\textcolor{PineGreen}{Am folosim tuple(x) pentru a transforma sirul nostru intr-un tuplu ca sa se poata da ca parametru}
+\begin{tabbing}
+\large
+carsMiss=CarsMiss({\textcolor{Plum}{tuple}}(date$\_$intrare), marime$\_$parcare, {\textcolor{Plum}{tuple}}(date$\_$iesire))  \\
+\end{tabbing}
+\begin{tabbing}
+\large
+ carsMht=CarsMht({\textcolor{Plum}{tuple}}(date$\_$intrare), marime$\_$parcare, {\textcolor{Plum}{tuple}}(date$\_$iesire))  \\\\
+ \textcolor{PineGreen}{Mai jos se poate vedea un exemplu de cod unde calculez timpul de execcutie pe care il}\\
+ \textcolor{PineGreen}{ are programul }\\
+\textcolor{PineGreen}{t1=reprezinta timpul de inceput ,iar t2=reprezinta timpul de sfarsit al programului}\\
+\textcolor{PineGreen}{t=este diferenta dintre timpul final si cel initial al programlui si aceasta variabila se va afisa}\\
+\textcolor{PineGreen}{ intr-un fisier}
+     
+\end{tabbing}
+\begin{tabbing}
+\large
+{t1 = time.time()\\
+path = depth$\_$first$\_$graph$\_$search(carsMiss)\\
+t2 = time.time()\\
+t = t2 - t1}\\
+\end{tabbing}
+\textcolor{PineGreen}{Costul caii il afisez de asemenea tot in fisier apeland \textcolor{Plum}{str}(path.path$\_$cost)}\\
+\textcolor{PineGreen}{De asemena la finalul programului apelez functia compare$\_$searchers pentru a face o comparatie intre 2 metode de cuatare diferite sau calcul de distanta a aceluasi searcher}
+\subsubsection{\textcolor{Periwinkle}{Cars.py}}
+In modului \textit{Cars.py} am declarate functiile \\
+-definire a starii noatre initiale si finale\\
+-returnare aa indexului unui pătratului gol într-o stare dată\\
+-definirea actiunilor cum ar fi Up,Down,Left,etc.\\
+-revenim la o nouă stare avand în vedere starea și acțiunea\\
+-definim o unctie de returnare a unei valori euristice pentru o stare data \\
+
+\subsubsection{\textcolor{Periwinkle}{search.py}}
+Acest modul a fost preluat din code$\_$skeleton-ul laboratorului 5.
+
+\subsubsection{\textcolor{Periwinkle}{utils.py}}
+Acest modul a fost preluat din code$\_$skeleton-ul laboratorului 5.
+\subsection {\textcolor{CadetBlue}{Lista Functiilor Aplicatiei}}
+
+
+\subsubsection{\textcolor{Periwinkle}{main.py $\leftarrow$ Functii}}
+Modulul \textbf{main} este modulul unde apelam toate functiile si declaram variabilele necesare.
+Incepem prin a crea fisierul unde se vor afisa rezultatele 
+
+\subsubsection{\textcolor{Periwinkle}{Cars.py $\leftarrow$ Functii}}
+
+\indent\textbf{\textcolor{Periwinkle}{class}\=\textbf{\textcolor{black}{Cars}(Problem)}}:\\  
+
+\begin{tabbing}
+\large
+\indent\textbf{\textcolor{Periwinkle}{def}}\=\textbf{\textcolor{purple}{$\_$$\_$init$\_$$\_$}}
+\textsc{\bfseries{}}{ (self, initial: object, marime$\_$parcare: object, goal = (1, 2, 3, 4, 5, 6, 7, 8,}\\{ 9, 10, 11, 12, 13, 14, 15,0)):}\\ 
+\bfseries{  }\indent \>{\textcolor{PineGreen}{Definim starea obiectivului și inițializam o problemă}}\\
+\bfseries{  }\indent \> self.goal  	= goal \\
+\bfseries{  }\indent \> self.numar$\_$curent = 0\\
+\bfseries{  }\indent \>  self.marime$\_$parcare = marime$\_$parcare\\
+\bfseries{  }\indent \>  Problem.$\_$$\_$init$\_$$\_$(self, initial, goal)\\
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+  
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+\indent\textbf{\textcolor{Periwinkle}{def}}\=\textbf{\textcolor{purple}{ $ $ find$\_$$\_$blankt$\_$$\_$square}}
+\textsc{\bfseries{}}{ (self, state):}\\ 
+\bfseries{  }\indent \>{\textcolor{PineGreen}{Returnează indexul pătratului gol într-o stare dată}}\\
+\bfseries{  }\indent \>{\textcolor{PineGreen}{numar$\_$curent calculeaza pentru fiecare state in care masina sa fie mutata},\\ \textcolor{PineGreen}{astfel muta doar o masina la un pas}}\\
+\bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  self.numar$\_$curent  $\le$  self.marime$\_$parcare :} \\
+\bfseries{   }\indent \> self.numar$\_$curent += 1\\
+\bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\={ $ $ self.numar$\_$curent == self.marime$\_$parcare + 1:} \\
+\bfseries{  }\indent \> self.numar$\_$curent += 1\\
+\bfseries{  }\indent\textbf{\textcolor{Periwinkle}{return}}\={  state.index ( self.numar$\_$curent )}\\
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+  
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+   \indent\textbf{\textcolor{Periwinkle}{def}}\=\textbf{\textcolor{purple}{$ $ action}}
+   \textsc{\bfseries{}}{ (self, state):}\\
+   \bfseries{  }\indent \>{\textcolor{PineGreen}{Definim actiunile in functie de miscarile masinilor}}\\
+   \bfseries{   }\indent \> posible$\_$action = {\textcolor{Periwinkle}{[} \textcolor{Gray}{'UP', 'DOWN', 'LEFT', 'RIGHT', 'STAY',}}\\
+   {\textcolor{Gray} {'JUMPLEFT', 'JUMPRIGHT', 'JUMPUP', 'JUMPDOWN'}\textcolor{Periwinkle}{]}}\\
+   \bfseries{  }\indent \>{\textcolor{PineGreen}{daca ajungem pe goal state sa eliminam miscarile}}\\
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{]} \textcolor{Periwinkle}{=}\textcolor{Periwinkle}{=}  self.goal \textcolor{Periwinkle}{[}self.index \textcolor{Periwinkle}{]}:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'LEFT'}}\textcolor{Periwinkle}{)}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'UP'}}\textcolor{Periwinkle}{)}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'RIGHT'}}\textcolor{Periwinkle}{)}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'DOWN'}}\textcolor{Periwinkle}{)}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'JUMPLEFT'}}\textcolor{Periwinkle}{)}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'JUMPUP'}}\textcolor{Periwinkle}{)}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'JUMPRIGHT'}}\textcolor{Periwinkle}{)}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'JUMPDOWN'}}\textcolor{Periwinkle}{)}\\
+    
+     \bfseries{  }\indent \>{\textcolor{PineGreen}{eliminam anumite actiuni in functie de plasarea masinilor}}\\
+     \bfseries{  }\indent \>{\textcolor{PineGreen}{spre exemplu sa nu faca miscari in afara matricei,}\\
+     \textcolor{PineGreen}{ sa nu faca salturi aiurea in afara matricei sau peste 2 masini}}\\
+     
+  \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ self.index  \textcolor{Periwinkle}{$\%$ }self.marime$\_$parcare\textcolor{Periwinkle}{ =}\textcolor{Periwinkle}{=} 0  \textcolor{Periwinkle}{or } state \textcolor{Periwinkle}{[} self.index -1 \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'LEFT'}}\textcolor{Periwinkle}{)}\\
+  
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ self.index  \textcolor{Periwinkle}{$\%$ }self.marime$\_$parcare\textcolor{Periwinkle}{ $\le$}\textcolor{Periwinkle}{=} 1 }\\{ \textcolor{Periwinkle}{or } state \textcolor{Periwinkle}{[} self.index -2 \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0  \textcolor{Periwinkle}{or } state \textcolor{Periwinkle}{[} self.index -1 \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{=} \textcolor{Periwinkle}{=} 0:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'JUMPLEFT'}}\textcolor{Periwinkle}{)}\\
+  
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ self.index  \textcolor{Periwinkle}{$\le$ } self.marime$\_$parcare\\ \textcolor{Periwinkle}{ or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{$-$ }}{ self.marime$\_$parcare \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'UP'}}\textcolor{Periwinkle}{)}\\
+  
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ self.index  \textcolor{Periwinkle}{$\le$ 2 * }self.marime$\_$parcare}\\{\textcolor{Periwinkle}{ or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{$-$ }}{ 2 * self.marime$\_$parcare \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0:}\\{\textcolor{Periwinkle}{ or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{$-$ }}{ self.marime$\_$parcare \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{=} \textcolor{Periwinkle}{=} 0:}\\ 
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(}\\  \textcolor{Gray}{'JUMPUP'}}\textcolor{Periwinkle}{)}\\
+  
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {$ $ self.index  \textcolor{Periwinkle}{$\%$ }self.marime$\_$parcare\textcolor{Periwinkle}{ =}\textcolor{Periwinkle}{=} self.marime$\_$parcare\textcolor{Periwinkle}{-} 1}\\{ \textcolor{Periwinkle}{or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{+}1 \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'RIGHT'}}\textcolor{Periwinkle}{)}\\
+  
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ self.index  \textcolor{Periwinkle}{$\%$ }self.marime$\_$parcare\textcolor{Periwinkle}{$\ge$ }\textcolor{Periwinkle}{=}self.marime$\_$parcare\textcolor{Periwinkle}{ -} 2 }\\{\textcolor{Periwinkle}{or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{+} 2 \textcolor{Periwinkle}{]} \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0:}\\{\textcolor{Periwinkle}{or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{+}1 \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{=} \textcolor{Periwinkle}{=} 0:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'JUMPRIGHT'}}\textcolor{Periwinkle}{)}\\
+  
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ self.index  \textcolor{Periwinkle}{$\geq$}\textcolor{Periwinkle}{(} \textcolor{purple}{$pow$}\textcolor{Periwinkle}{(}self.marime$\_$parcare,2\textcolor{Periwinkle}{)}\textcolor{Periwinkle}{-}self.marime$\_$parcare\textcolor{Periwinkle}{-}1\textcolor{Periwinkle}{)}}\\{\textcolor{Periwinkle}{ or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{$+$ }}{ self.marime$\_$parcare \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'DOWN'}}\textcolor{Periwinkle}{)}\\
+  
+   \bfseries{  }\indent\textbf{\textcolor{Periwinkle}{if}}\= {  $ $ self.index  \textcolor{Periwinkle}{$\geq$}\textcolor{Periwinkle}{(} \textcolor{purple}{$pow$}\textcolor{Periwinkle}{(}self.marime$\_$parcare,2\textcolor{Periwinkle}{)}\textcolor{Periwinkle}{-}2*self.marime$\_$parcare\textcolor{Periwinkle}{-}1\textcolor{Periwinkle}{)}}\\{\textcolor{Periwinkle}{ or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{$+$ }}{ self.marime$\_$parcare \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{=} \textcolor{Periwinkle}{=} 0:}\\{\textcolor{Periwinkle}{ or } state \textcolor{Periwinkle}{[} self.index \textcolor{Periwinkle}{$+$ }}{ 2*self.marime$\_$parcare \textcolor{Periwinkle}{]}    \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} 0:}\\
+   \bfseries{   }\indent \> posible$\_$action.remove = {\textcolor{Periwinkle}{(} \textcolor{Gray}{'JUMPDOWN'}}\textcolor{Periwinkle}{)}\\
+  
+  \centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+    \indent\textbf{\textcolor{Periwinkle}{def}}\=\textbf{\textcolor{purple}{$ $ result}} \textsc{\bfseries{}}{ (self, state,action):}\\
+    \bfseries{  }\indent \>{\textcolor{PineGreen}{Avand în vedere starea si actiunea,revenim la o noua stare care este rezultatul actiunii.}}\\
+        \bfseries{  }\indent \>{\textcolor{PineGreen}{Actiunea se presupune ca este o actiune valida in stat.}}\\
+          \bfseries{  }\indent \>{\textcolor{PineGreen}{blank is the index of the blank square.}}\\
+   \bfseries{   }\indent \> new$\_$state = {\textcolor{Plum}{list} \textcolor{Periwinkle}{(} state\textcolor{Periwinkle} {)}}\\
+   \bfseries{  }\indent \>{\textcolor{PineGreen}{exprimam delta ca actiunea pe care o poate executa o masina,} \\
+   \textcolor{PineGreen}{clasicele sus, jos, stanga, dreapta, si salturile peste o casuta, plus stay.}}\\
+  \bfseries{   }\indent \> delta = $\{${ \textcolor{Gray}{'UP'}:$-$ self.marime$\_$parcare ,\textcolor{Gray} {'DOWN'} :self.marime$\_$parcare ,}\\{\textcolor{Gray} {'Left'} :$-$1,\textcolor{Gray} {'RIGHT'} :1,\textcolor{Gray} {'STAY'} :0,\textcolor{Gray} {'JUMPLEFT'} : $-$2,\textcolor{Gray} {'JUMPRIGHT'} :2}\\
+  {\textcolor{Gray} {'JUMPDOWN'} :+2* self.marime$\_$parcare,\textcolor{Gray} {'JUMPUP'} :$-$2*self.marime$\_$parcare}$\}$\\
+  \bfseries{   }\indent \> neighbor = self.index +delta[action] \\
+  \bfseries{   }\indent \> new$\_$state[self.index], new$\_$state[neighbor] = new$\_$state[neighbor], new$\_$state[self.index]\\
+  \bfseries{   }\indent \>{\textcolor{Periwinkle}{return} \textcolor{Plum}{tuple} ( new$\_$state)} \\
+     \centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+     \indent\textbf{\textcolor{Periwinkle}{def}}\=\textbf{\textcolor{purple}{$ $ h}} \textsc{\bfseries{}}{ (self, node):}\\
+   \bfseries{   }\indent \>{\textcolor{Periwinkle}{return} \textcolor{Plum}{sum} ( s \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} g \textcolor{Periwinkle}{for} (s,g) \textcolor{Periwinkle}{ in }\textcolor{Plum}{zip}(node.state,self.goal))} \\
+     \centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+ \indent\textbf{\textcolor{Periwinkle}{class}\textbf{\textcolor{black}{CarsMht}(Cars)}}:\\\\
+ \bfseries{   }\indent \>{ \textcolor{PineGreen}{Manhattan Distance}}\\
+  \indent\textbf{\textcolor{Periwinkle}{def}}\=\textbf{\textcolor{purple}{$ $ h}} \textsc{\bfseries{}}{ (self, node):}\\\\
+   \bfseries{   }\indent \>{dim=self.marime$\_$parcare}\\
+   \bfseries{   }\indent \>{\textcolor{Periwinkle}{return} \textcolor{Plum}{sum} ( ( \textcolor{Plum}{abs}(\textcolor{Plum}{int}(s/dim) \textcolor{Periwinkle}{-} \textcolor{Plum}{int}(g/dim))+ \textcolor{Plum}{abs}(\textcolor{Plum}{int}(s$\%$dim) \textcolor{Periwinkle}{-} \textcolor{Plum}{int}(g$\%$dim))}\\{{\textcolor{Periwinkle}{for} (s,g) \textcolor{Periwinkle}{in} }\textcolor{Plum}{zip}(node.state,self.goal))} \\
+ 
+         \centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+    \bfseries{   }\indent \>{ \textcolor{PineGreen}{Return the heuristic value for a given state}. \\
+    {\textcolor{PineGreen}{Default heuristic function used is}}\\
+    {   \textcolor{PineGreen} h(n) = number of misplaced tiles}}\\
+    \indent\textbf{\textcolor{Periwinkle}{class}\textbf{\textcolor{black}{CarsMiss}(Cars)}}:\\\\
+  \indent\textbf{\textcolor{Periwinkle}{def}}\=\textbf{\textcolor{purple}{$ $ h}} \textsc{\bfseries{}}{ (self, node):}\\
+   \bfseries{   }\indent \>{\textcolor{Periwinkle}{return} \textcolor{Plum}{sum} ( s \textcolor{Periwinkle}{!} \textcolor{Periwinkle}{=} g {\textcolor{Periwinkle}{for} (s,g) \textcolor{Periwinkle}{in} }\textcolor{Plum}{zip}(node.state,self.goal))} \\
+ \centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip\\
+\end{tabbing}
+
+
+
+\subsubsection{\textcolor{Periwinkle}{search.py $\leftarrow$ Functii}}
+\begin{tabbing}
+\indent\textbf{\textcolor{Periwinkle}{def}} \textbf{\textcolor{purple}{ depth$\_$first$\_$graph$\_$search}}
+\textsc{\bfseries{}}{ (problem):}\\ 
+\bfseries{   }\indent \>{ \textcolor{PineGreen}{Căutați mai întâi cele mai adânci noduri din arborele de căutare.}. \\
+    {\textcolor{PineGreen}{Cauta printre succesorii unei probleme pentru a găsi un scop.}}\\
+    {   \textcolor{PineGreen} {Frontiera argumentului ar trebui să fie o coadă goală.Nu este prins in bucle.}}\\
+     {   \textcolor{PineGreen} {Dacă două căi ajung la aceeasi stare, o va utiliza doar pe prima..}}}\\
+ \indent \>{frontier = [(Node(problem.initial))]} \\ 
+  \indent \>{   explored = {\textcolor{Periwinkle}{set}}()}\\
+\textcolor{Periwinkle}{while} frontier:\\
+      {  node = frontier.pop()}\\
+        \textcolor{Periwinkle}{if} problem.goal$\_$test(node.state):\\
+ {$                        $}           \textcolor{Periwinkle}{return} node\\
+        explored.add(node.state)\\
+        frontier.extend(child \textcolor{Periwinkle}{for} child \textcolor{Periwinkle}{in} node.expand(problem)\\
+                        \textcolor{Periwinkle}{if} child.state \textcolor{Periwinkle}{not in} explored \textcolor{Periwinkle}{and}\\
+                        child \textcolor{Periwinkle}{not in} frontier)\\
+    \indent \>{   {\textcolor{Periwinkle}{return}}} None\\
+        
+
+\end{tabbing}
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip
+    \begin{tabbing}
+\indent\textbf{\textcolor{Periwinkle}{def}} \textbf{\textcolor{purple}{ astar$\_$search}}\\
+\bfseries{   }\indent \>{ \textcolor{PineGreen}{Căutarea A * este cea mai bună căutare grafică cu f (n) = g (n) + h (n).} \\
+    {   \textcolor{PineGreen} {Trebuie să specificați funcția h când apelați astar_search sau}}\\
+     {   \textcolor{PineGreen} {altceva în subclasa voastra}}}\\
+\textsc{\bfseries{}}{ (problem, h={\textcolor{purple}{None}}):}\\ 
+ \bfseries{   }\indent \>{h = memoize(h \textbf{\textcolor{Periwinkle}{or} }problem.h, \textbf{\textcolor{Gray}{'h'})}}\\
+  \bfseries{   }\indent \>{\textbf{\textcolor{Periwinkle}{return} }}{best$\_$first$\_$graph$\_$search(problem,\textbf{\textcolor{Periwinkle}{lambda}} n:n.path$\_$cost+h(n)}
+\end{tabbing}
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip
+\centerline{\rule{15cm}{0.4pt}}
+    \bigskip
+    
+\subsubsection{\textcolor{Periwinkle}{utils.py $\leftarrow$ Functii}}
+Functiile din modulul util.py sunt niste tool-uri ce sunt  apelate de functiile din modulul search.py
+\section{\textcolor{BlueViolet}{Experimente si resultate}}\label{sec_ed}
+\subsection{\textcolor{Periwinkle}{Timp de executie$\rightarrow$Depth-first-graph-search}}
+In sectiunea urmatoare am ales pentru experimente doua tipuri diferite de search si am comparat costul caii,respectiv timpul de executie pentru a face o comparatie.\\\\
+In primul grafic am calculat timpul de executie al metodei de cautare \textit{DEPTH-FIRST-GRAPH-SEARCH} pentru o parcare de marimea 1 , 2, 3, 4 si 5 si am trecut datele experimetale calculate cu distanta Manhattan. Se paote vedea o crestere destul de mare de la marime$\_$parcare $>$3 
+\begin{center}
+    \textbf{\includegraphics[scale=0.8]{depht_grafic.png}}
+\end{center}
+\subsection{\textcolor{Periwinkle}{Timp de executie$\rightarrow$AStar-search}}
+In cel de-al doilea grafic am calculat timpul de executie al metodei de cautare \textit{ ASTAR-SEARCH} pentru o parcare de marimea 1 , 2, 3, 4 si 5 si am trecut datele experimetale calculate cu distanta Manhattan. Se paote vedea o crestere destul de mare de la marime$\_$parcare $>$3 insa o incetinire a cresterii pentru marime$\_$parcare egal cu 4
+\begin{center}
+    \textbf{\includegraphics[scale=0.8]{astar_grafic.png}}
+\end{center}
+\subsection{\textcolor{Periwinkle}{Timp de executie$\rightarrow$Comparatie}}
+In cel de-al treilea grafic am facut o comparatie a metodei de cautare \textit{DEPTH-FIRST-GRAPH-SEARCH} si a metodei de cautare \textit{ ASTAR-SEARCH} pentru o parcare de marimea 1 , 2, 3, 4 si 5 
+Se poate observa din graficul timpului de executie ca metoda \textit{DEPTH-FIRST-GRAPH-SEARCH} este mai eficienta din punctul de vedere al timpului fata de metoda de cautare \textit{ ASTAR-SEARCH}  . De asemenea o parcare mai mare sau egala cu 6 timpul de executie deja devine de nemasurat sau un timp ce tinde spre infinit din perspectiva metodei de cautare \textit{ ASTAR-SEARCH}
+\begin{center}
+    \textbf{\includegraphics[scale=0.8]{timp_grafic.png}}
+\end{center}
+\subsection{\textcolor{Periwinkle}{Distanta Manhatan si Missaplaced Tiles$\rightarrow$Comparatie}}
+In cel de-al patrulea grafic prezentat se poate observa o diferenta in timpul de executie metoda Distantei Manhattan si Missplaced Tiles
+\begin{center}
+    \textbf{\includegraphics[scale=0.8]{123345.png}}
+\end{center}
+In cazul prezentat (marime$\_$parcare este egal cu 3 respectiv 4) se vede o usoara diferenta intre cele doua metode siastfel reiese Manhattan este mai bun in comparatie cu Missplaced Tiles.
+\subsection{\textcolor{Periwinkle}{Costl caii$\rightarrow$Comparatie}}
+In ultimul grafic prezentat in acesta sectiune  , se poate observa diferenta dintre costul caii metodei de cautare \textit{DEPTH-FIRST-GRAPH-SEARCH} si costui caii metodei de cautare \textit{ ASTAR-SEARCH}  .\\\\
+Dupa cum se observa costul caii se prezinta in antiteza graficului de calculare a timpului de executie pentru cele 2 metode de cautare  .\\\\
+In timp ce timpul de executie pentru  \textit{DEPTH-FIRST-GRAPH-SEARCH} este mai eficient fata de \textit{ ASTAR-SEARCH}, calea mai eficienta este calcuata de ASTAR-SEARCH si cea mai putin eficienta este calculata de  \textit{DEPTH-FIRST-GRAPH-SEARCH}.\\\\
+Se poate observa ca pentru o parcare mai mare sau egala cu 6 timpul costul caii deja devine de nemasurat sau  tinde spre infinit in cazul metodei  \textit{DEPTH-FIRST-GRAPH-SEARCH}\\\\
+\begin{center}
+    \textbf{\includegraphics[scale=0.9]{costul caii.png}}
+\end{center}
+\subsection{\textcolor{Periwinkle}{Compare$\_$searcher}}
+\begin{center}
+    \textbf{\includegraphics[scale=0.8]{compare.png}}
+\end{center}
+Aceasta functie am preluat-o din lucrarea de la laborator 5 din fisierul  \textit{fifteen$\_$puzzle} si am apelat-o pentru a vedea diferentele dintre cele doua metode de cautare pe care le-am ales sa le compar .\\\\
+In imaginea de mai sus functia este folosita pentru comparatia a aelesasi metode de cautare insa diferenta consta in calcularea distantei 
+\begin{center}
+    \textbf{\includegraphics[scale=0.8]{1.png}}
+\end{center}
+Mai sus este prezentata functia pentru o parcare de 1 x 1 si dferenta dintre cele 2 metode alese
+\begin{center}
+    \textbf{\includegraphics[scale=0.7]{2.png}}
+\end{center}
+Mai sus este prezentata functia pentru o parcare de 2 x 2 si pasii de executie
+\begin{center}
+    \textbf{\includegraphics[scale=0.8]{3-Miss.png}}
+\end{center}
+Mai sus este prezentata functia pentru o parcare de 3 x 3 si dferenta dintre cele 2 metode alese
+\section{\textcolor{BlueViolet}{Concluzii}}\label{sec_sc}
+In urma acestui Assigment mi-am dezvoltat abilitatile de codare in limbajul
+Python, mi-am intarit cunostintele despre Search Problem si mi-am inbunatatit abiliattiel de a scrie in LATEX.\\\\
+Acest Assigment a fost o adevarata provocare , am intampinat cateva greutati la adaptatrea  problemei folosind frameworkul de la \textit{fifteen$\_$puzzle} si \textit{eight$\_$puzzle}, cum sa fac
+sa mut fiecare masina cate un pas pe tura si mai ales testarea si gasirea unei
+euristici potrivite.\\\\
+Am incercat sa respect fiecare cerinta din metodologie, astfel incat sa pot descrie fiecare parametru corespunzator acesteia in functie de implementarile, abordarea si rezultatelepe care le-am justificat mai sus
+
+\section{\textcolor{BlueViolet}{Referinte}}\label{sec_ed}
+\url{https://classroom.google.com/u/1/c/Mjc5NTAwMTYxNjky/m/MzI0Mjg0MjYxMzkx/details} (frameworkul de la laboratorul 5)\\\\
+\url{https://cs.calvin.edu/courses/cs/344/kvlinden/resources/AIMA-3rd-edition.pdf}\\\\
+\url{https://github.com/aimacode/aima-pseudocode/blob/master/aima3e-algorithms.pdf}\\\\
+\url{https://www.w3schools.com/python/ref_list_append.asp}\\\\
+\url{http://aima.cs.berkeley.edu/}\\\\
+\url{https://www.overleaf.com/learn/latex/Tutorials}\\\\
+\url{https://www.w3schools.com/python/}\\\\
+\url{https://en.wikibooks.org/wiki/LaTeX/Colors}\\\\
+\url{https://stackoverflow.com/questions/227459/how-to-get-the-ascii-value-of-a-character}\\\\
+\url{http://openbookproject.net/thinkcs/python/english3e/tuples.html}\\\\
+\url{https://www.geeksforgeeks.org/a-search-algorithm/}\\\\
+\url{https://cse442-17f.github.io/A-Star-Search/}\\\\
+\url{https://www.ics.uci.edu/~kkask/Fall-2016%20CS271/slides/03-InformedHeuristicSearch.pdf}
+
+\end{document} 
